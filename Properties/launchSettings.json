@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ProfitDLL": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}
