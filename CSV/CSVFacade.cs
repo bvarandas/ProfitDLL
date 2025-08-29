@@ -1,10 +1,11 @@
 ﻿using CSV;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ProfitDLL.CSV;
 
-internal class CSVFacade
+internal class CSVFacade : IDisposable
 {
 
     private static CSVTopBook10Factory _topbook10 = new CSVTopBook10Factory();
@@ -20,9 +21,7 @@ internal class CSVFacade
             while (!cs.IsCancellationRequested)
             {
                 _topbook10.ProcessAsync();
-
                 _topbook.ProcessAsync();
-
                 _trades.ProcessAsync();
 
                 Thread.Sleep(10000);
@@ -30,27 +29,13 @@ internal class CSVFacade
         }));
 
         _ThreadWriteCsv.Name = "ThreadWriteCsv";
-
         _ThreadWriteCsv.Start();
     }
 
-    public async Task AddCsvTopBookAsync(Csv csv)
-    {
-        await _topbook.AddAsync(csv);
-    }
+    public async Task AddCsvTopBookAsync(Csv csv) => await _topbook.AddAsync(csv);
+    public async Task AddCsvTradesAsync(Csv csv) => await _trades.AddAsync(csv);
+    public async Task AddCsvBookAsync(Csv csv) => await _topbook10.AddAsync(csv);
+    public async Task AddCsvBookEvent(Csv csv) => await _bookevent.AddAsync(csv);
+    public void Dispose() => cs.Cancel();
 
-    public async Task AddCsvTradesAsync(Csv csv)
-    {
-        await _trades.AddAsync(csv);
-    }
-
-    public async Task AddCsvBookAsync(Csv csv)
-    {
-        await _topbook10.AddAsync(csv);
-    }
-
-    public async Task AddCsvBookEvent(Csv csv)
-    {
-        await _bookevent.AddAsync(csv);
-    }
 }
