@@ -1,7 +1,9 @@
-﻿using ProfitDLL.CSV;
+﻿using Microsoft.Extensions.Configuration;
+using ProfitDLL.CSV;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -139,12 +141,6 @@ public partial class DLLConnector
     public static bool bMarketConnected = false;
 
     static readonly CultureInfo provider = CultureInfo.InvariantCulture;
-    public static Dictionary<string, double> mutiplicadores = new Dictionary<string, double>()
-    {
-        { "WIN",0.2 },
-        { "WDO",0.5 },
-        { "BIT",1 }
-    };
     #endregion
 
     #region consts
@@ -832,7 +828,24 @@ public partial class DLLConnector
 
     static string strAssetListFilter = "";
 
+    private static void SubscribeAssets(List<string> tickers)
+    {
+        tickers.ForEach(input =>
+        {
+            var split = input.Split(':');
 
+            var retVal = ProfitDLL.SubscribeTicker(split[0], split[1]);
+
+            if (retVal == NL_OK)
+            {
+                WriteSync("Subscribe com sucesso");
+            }
+            else
+            {
+                WriteSync($"Erro no subscribe: {retVal}");
+            }
+        });
+    }
     private static void SubscribeAsset()
     {
         //Selecionar ativo para callback
@@ -857,6 +870,19 @@ public partial class DLLConnector
         {
             WriteSync($"Erro no subscribe: {retVal}");
         }
+    }
+
+
+    private static void DoSubscribeOfferBook(List<string> tickers)
+    {
+        tickers.ForEach(input =>
+        {
+            var split = input.Split(':');
+
+            var retVal = ProfitDLL.SubscribeOfferBook(split[0], split[1]);
+
+            WriteResult(retVal);
+        });
     }
 
     private static void DoSubscribeOfferBook()
@@ -1154,20 +1180,48 @@ public partial class DLLConnector
         return retVal;
     }
 
+
+
     public static void Main(string[] args)
     {
-        Console.Write("Chave de ativação: ");
-        string key = Console.ReadLine();
+        IConfigurationBuilder builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory()) // Set the base path for configuration files
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true) // Add appsettings.json
+            .AddEnvironmentVariables() // Add environment variables
+            .AddCommandLine(args); // Add command-line arguments
 
-        Console.Write("Usuário: ");
-        string user = Console.ReadLine();
+        IConfigurationRoot configuration = builder.Build();
 
-        string password = ReadPassword();
+        // Access configuration values
+        string user = configuration["ProfitSettings:User"];
+        string pass = configuration["ProfitSettings:Password"];
+        string activationCode = configuration["ProfitSettings:ActivationCode"];
+        var tickers = configuration.GetSection("ProfitSettings:Tickers").Get<List<string>>();
+        Console.WriteLine($"activationCode: {activationCode}");
 
-        if (StartDLL(key, user, password) != NL_OK)
+        //string defaultConnection = configuration.GetConnectionString("DefaultConnection");
+        //Console.WriteLine($"Default Connection: {defaultConnection}");
+
+
+        //Console.Write("Chave de ativação: ");
+        //string key = Console.ReadLine();
+
+        Console.Write($"Usuário: {user}");
+        // Console.ReadLine();
+
+        string password = pass; //ReadPassword();
+
+        //if (StartDLL(key, user, password) != NL_OK)
+        if (StartDLL(activationCode, user, password) != NL_OK)
         {
             return;
         }
+
+        //subscribe Tickers
+        SubscribeAssets(tickers);
+
+        //subscribe Offer Tickers
+        DoSubscribeOfferBook(tickers);
 
         var terminate = false;
         while (!terminate)
