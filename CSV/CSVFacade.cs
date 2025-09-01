@@ -8,14 +8,19 @@ namespace ProfitDLL.CSV;
 internal class CSVFacade : IDisposable
 {
 
-    private static CSVTopBook10Factory _topbook10 = new CSVTopBook10Factory();
-    private static CSVTopBookFactory _topbook = new CSVTopBookFactory();
-    private static CSVTradesFactory _trades = new CSVTradesFactory();
-    private static CSVBookEventFactory _bookevent = new CSVBookEventFactory();
+    private static CSVTopBook10Factory _topbook10 = null;
+    private static CSVTopBookFactory _topbook = null;
+    private static CSVTradesFactory _trades = null;
+    private static CSVBookEventFactory _bookevent = null;
     private static Thread _ThreadWriteCsv = null;
     private static CancellationTokenSource cs = new CancellationTokenSource();
-    public CSVFacade()
+    public CSVFacade(string pathFile)
     {
+        _topbook10 = new CSVTopBook10Factory(pathFile);
+        _topbook = new CSVTopBookFactory(pathFile);
+        _trades = new CSVTradesFactory(pathFile);
+        _bookevent = new CSVBookEventFactory(pathFile);
+
         _ThreadWriteCsv = new Thread(new ThreadStart(() =>
         {
             while (!cs.IsCancellationRequested)

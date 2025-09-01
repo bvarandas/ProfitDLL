@@ -13,6 +13,11 @@ internal class CSVTopBook10Factory : CSVFactory, IDisposable
     private static ConcurrentDictionary<string, ConcurrentQueue<TopBook10>>
         _TopBook10 = new ConcurrentDictionary<string, ConcurrentQueue<TopBook10>>();
 
+    public CSVTopBook10Factory(string pathFile) : base()
+    {
+        PathFile = pathFile ?? throw new ArgumentNullException(nameof(pathFile));
+    }
+
     public override Func<Task> ProcessAsync => async () =>
     {
         foreach (var topBook in _TopBook10?.Keys)
@@ -33,7 +38,7 @@ internal class CSVTopBook10Factory : CSVFactory, IDisposable
     protected override Func<string, Task> WriteAsync => async (string ticker) =>
     {
         var date = DateTime.Now.ToString("yyyyMMdd");
-        using (var stream = File.Open(@$"CsvFiles\{date}_{ticker}.csv", FileMode.Append))
+        using (var stream = File.Open(@$"{PathFile}\{date}\{date}_{ticker}.csv", FileMode.Append))
         using (var writer = new StreamWriter(stream))
         using (var csv = new CsvWriter(writer, _config))
         {
@@ -45,6 +50,8 @@ internal class CSVTopBook10Factory : CSVFactory, IDisposable
             }
         }
     };
+
+
 
     public void Dispose()
     {

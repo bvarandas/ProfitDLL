@@ -8,7 +8,7 @@ namespace ProfitDLL.Factory;
 
 internal abstract class CSVFactory
 {
-
+    protected static string PathFile { get; set; }
     protected static CsvConfiguration _config = new CsvConfiguration(CultureInfo.InvariantCulture)
     {
         HasHeaderRecord = false,

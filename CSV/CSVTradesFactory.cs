@@ -13,6 +13,13 @@ internal class CSVTradesFactory : CSVFactory
     private static ConcurrentDictionary<string, ConcurrentQueue<Trade>>
         _Trades = new ConcurrentDictionary<string, ConcurrentQueue<Trade>>();
 
+    public CSVTradesFactory(string pathFile) : base()
+    {
+        PathFile = pathFile ?? throw new ArgumentNullException(nameof(pathFile));
+        _config.HasHeaderRecord = false;
+    }
+
+
     public override Func<Csv, Task<bool>> AddAsync => (Csv csv) =>
     {
         var trade = csv as Trade;
@@ -35,7 +42,7 @@ internal class CSVTradesFactory : CSVFactory
     protected override Func<string, Task> WriteAsync => async (string ticker) =>
     {
         var date = DateTime.Now.ToString("yyyyMMdd");
-        using (var stream = File.Open(@$"CsvFiles\{ticker}_{date}.csv", FileMode.Append))
+        using (var stream = File.Open(@$"{PathFile}\{date}\{date}_{ticker}_trades.csv", FileMode.Append))
         using (var writer = new StreamWriter(stream))
         using (var csv = new CsvWriter(writer, _config))
         {

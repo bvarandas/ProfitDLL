@@ -16,8 +16,9 @@ internal class CSVBookEventFactory : CSVFactory, IDisposable
 
     private static Thread _ThreadWriteCsv = null;
     private static CancellationTokenSource cs = new CancellationTokenSource();
-    public CSVBookEventFactory()
+    public CSVBookEventFactory(string pathFile)
     {
+        PathFile = pathFile ?? throw new ArgumentNullException(nameof(pathFile));
         _ThreadWriteCsv = new Thread(new ThreadStart(() =>
         {
             while (!cs.IsCancellationRequested)
@@ -63,7 +64,7 @@ internal class CSVBookEventFactory : CSVFactory, IDisposable
     {
         var date = DateTime.Now.ToString("yyyyMMdd");
 
-        using (var stream = File.Open(@$"CsvFiles\{date}_{ticker}.csv", FileMode.Append))
+        using (var stream = File.Open(@$"CsvFiles\{date}\{date}_{ticker}.csv", FileMode.Append))
         using (var writer = new StreamWriter(stream))
         using (var csv = new CsvWriter(writer, _config))
         {
