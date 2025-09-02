@@ -1,0 +1,6 @@
+services:
+  profitdll:
+    image: ${DOCKER_REGISTRY-}profitdll
+    build:
+      context: .
+      dockerfile: Profit\Dockerfile

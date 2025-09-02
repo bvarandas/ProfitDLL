@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  profitdll:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+    networks:
+      - net_profit
+
+networks:
+    net_profit:
+        driver: bridge  
