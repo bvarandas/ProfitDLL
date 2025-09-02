@@ -127,9 +127,9 @@ public class DLLConnectorFacade
 
             var dataOfertaStamp = new DateTimeOffset(date).ToUnixTimeSeconds();
 
+            //_csv.AddCsvBookEvent(new CSV.BookEvent(assetId.Ticker, Timestamp.ToString(), dataOfertaStamp.ToString(), nQtd, offer.Volume, sPrice, Side));
 
-
-            _csv.AddCsvBookEvent(new CSV.BookEvent(assetId.Ticker, Timestamp.ToString(), dataOfertaStamp.ToString(), nQtd, offer.Volume, sPrice, Side));
+            ThreadPool.QueueUserWorkItem(new WaitCallback(_csv.AddCsvBookEvent), new CSV.BookEvent(assetId.Ticker, Timestamp.ToString(), dataOfertaStamp.ToString(), nQtd, offer.Volume, sPrice, Side));
         }
 
         if (m_lstOfferBuy.Count > 10 && m_lstOfferSell.Count > 10)
@@ -147,7 +147,8 @@ public class DLLConnectorFacade
             var topBook = new CSV.TopBook(assetId.Ticker, Timestamp.ToString(), dataOfertaStamp.ToString(),
                 lstBuy[0].Qtd, lstBuy[0].Volume, lstBuy[0].Price, lstSell[0].Qtd, lstSell[0].Volume, lstSell[0].Price);
 
-            _csv.AddCsvTopBookAsync(topBook);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(_csv.AddCsvTopBookAsync), topBook);
+
 
             var topBook10 = new CSV.TopBook10(assetId.Ticker, Timestamp.ToString(), dataOfertaStamp.ToString(),
                 lstBuy[0].Qtd, lstBuy[0].Volume, lstBuy[0].Price, lstSell[0].Qtd, lstSell[0].Volume, lstSell[0].Price,
@@ -161,7 +162,8 @@ public class DLLConnectorFacade
                 lstBuy[8].Qtd, lstBuy[8].Volume, lstBuy[8].Price, lstSell[8].Qtd, lstSell[8].Volume, lstSell[8].Price,
                 lstBuy[9].Qtd, lstBuy[9].Volume, lstBuy[9].Price, lstSell[9].Qtd, lstSell[9].Volume, lstSell[9].Price);
 
-            _csv.AddCsvBookAsync(topBook10);
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(_csv.AddCsvBookAsync), topBook10);
 
         }
     }
@@ -172,10 +174,12 @@ public class DLLConnectorFacade
         {
             dateTime = DateTime.MinValue;
         }
+        //Thread.Sleep(200);
+        ThreadPool.QueueUserWorkItem(new WaitCallback(_csv.AddCsvTradesAsync), new CSV.Trade(assetId.Ticker, dateTime, tradeNumber, price, vol, qtd, buyAgent, sellAgent, tradeType));
 
-        _csv.AddCsvTradesAsync(new CSV.Trade(assetId.Ticker, dateTime, tradeNumber, price, vol, qtd, buyAgent, sellAgent, tradeType));
+        //_csv.AddCsvTradesAsync(new CSV.Trade(assetId.Ticker, dateTime, tradeNumber, price, vol, qtd, buyAgent, sellAgent, tradeType));
 
-        WriteSync($"TradeCallback: {assetId.Ticker}: {assetId.Bolsa} | price {price}");
+        WriteSync($"TradeCallback: {assetId.Ticker}: {assetId.Bolsa} | price {price} | date: {dateTime}");
     }
 
     public static void MarshalOfferBuffer(IntPtr buffer, List<TConnectorOffer> lstOffer, string ticker)
@@ -316,7 +320,7 @@ public class DLLConnectorFacade
         }
         Task.Run(() =>
         {
-            Thread.Sleep(10000);
+            Thread.Sleep(5000);
 
             //subscribe Tickers
             SubscribeAssets(tickers);
@@ -324,6 +328,9 @@ public class DLLConnectorFacade
             //subscribe Offer Tickers
             DoSubscribeOfferBook(tickers);
         });
+
+        ThreadPool.SetMinThreads(10, 10);
+        ThreadPool.SetMaxThreads(100, 100);
     }
 
     private static int StartDLL(string key, string user, string password)
@@ -349,7 +356,7 @@ public class DLLConnectorFacade
 
             //ProfitDLL.SetOrderCallback(_orderCallback);
             //ProfitDLL.SetOrderHistoryCallback(_orderHistoryCallback);
-            //ProfitDLL.SetOfferBookCallbackV2(_offerBookCallbackV2);
+            ProfitDLL.SetOfferBookCallbackV2(_offerBookCallbackV2);
             //ProfitDLL.SetAssetListInfoCallbackV2(_assetListInfoCallbackV2);
             //ProfitDLL.SetAdjustHistoryCallbackV2(_adjustHistoryCallbackV2);
             //ProfitDLL.SetAssetPositionListCallback(_assetPositionListCallback);
