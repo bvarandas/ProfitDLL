@@ -174,12 +174,11 @@ public class DLLConnectorFacade
         {
             dateTime = DateTime.MinValue;
         }
-        //Thread.Sleep(200);
+
         ThreadPool.QueueUserWorkItem(new WaitCallback(_csv.AddCsvTradesAsync), new CSV.Trade(assetId.Ticker, dateTime, tradeNumber, price, vol, qtd, buyAgent, sellAgent, tradeType));
-
-        //_csv.AddCsvTradesAsync(new CSV.Trade(assetId.Ticker, dateTime, tradeNumber, price, vol, qtd, buyAgent, sellAgent, tradeType));
-
+#if DEBUG
         WriteSync($"TradeCallback: {assetId.Ticker}: {assetId.Bolsa} | price {price} | date: {dateTime}");
+#endif
     }
 
     public static void MarshalOfferBuffer(IntPtr buffer, List<TConnectorOffer> lstOffer, string ticker)

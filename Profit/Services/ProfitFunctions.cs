@@ -6,7 +6,7 @@ namespace ProfitDLLClient;
 
 public class ProfitDLL
 {
-    private const string dll_path = "ProfitDLL.dll";
+    private const string dll_path = "Services/ProfitDLL.dll";
 
     [DllImport(dll_path, CallingConvention = CallingConvention.StdCall)]
     public static extern int DLLInitializeMarketLogin(

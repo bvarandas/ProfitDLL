@@ -18,13 +18,13 @@ internal class CSVTopBookFactory : CSVFactory
         PathFile = pathFile ?? throw new ArgumentNullException(nameof(pathFile));
 
     }
-    public override Func<Csv, Task<bool>> AddAsync => (Csv csv) =>
+    public override Func<ICsv, Task<bool>> AddAsync => (ICsv csv) =>
     {
-        var topBook = csv as TopBook;
-        string key = $"{topBook.ticker}_topbook";
+        var topBook = (TopBook)csv;
+        string key = $"{topBook.Ticker}_topbook";
         var ret = _TopBook.AddOrUpdate(key, topBook, (key, old) => topBook);
 
-        return Task.FromResult(ret is not null);
+        return Task.FromResult(ret.Ticker is not null);
     };
 
     public override Func<Task> ProcessAsync => async () =>

@@ -24,14 +24,14 @@ internal class CSVTopBook10Factory : CSVFactory, IDisposable
             await WriteAsync(topBook);
     };
 
-    public override Func<Csv, Task<bool>> AddAsync => (Csv csv) =>
+    public override Func<ICsv, Task<bool>> AddAsync => (ICsv csv) =>
     {
-        var topBook = csv as TopBook10;
+        var topBook = (TopBook10)csv;
         var bag = new ConcurrentQueue<TopBook10>();
 
         bag.Enqueue(topBook);
 
-        var ret = _TopBook10.AddOrUpdate($"{topBook.ticker}_book10", bag, (key, old) => bag);
+        var ret = _TopBook10.AddOrUpdate($"{topBook.Ticker}_book10", bag, (key, old) => bag);
         return Task.FromResult(ret is not null);
     };
 

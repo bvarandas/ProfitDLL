@@ -34,10 +34,10 @@ internal class CSVBookEventFactory : CSVFactory, IDisposable
         _ThreadWriteCsv.Start();
     }
 
-    public override Func<Csv, Task<bool>> AddAsync => (Csv csv) =>
+    public override Func<ICsv, Task<bool>> AddAsync => (ICsv csv) =>
     {
-        var bookEvent = csv as BookEvent;
-        var key = $"{bookEvent.ticker}_bookvent";
+        var bookEvent = (BookEvent)csv;
+        var key = $"{bookEvent.Ticker}_bookvent";
 
         if (!_BookEvent.TryGetValue(key, out ConcurrentQueue<BookEvent> bag))
             bag = new ConcurrentQueue<BookEvent>();

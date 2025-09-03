@@ -20,16 +20,16 @@ internal class CSVTradesFactory : CSVFactory
     }
 
 
-    public override Func<Csv, Task<bool>> AddAsync => (Csv csv) =>
+    public override Func<ICsv, Task<bool>> AddAsync => (ICsv obj) =>
     {
-        var trade = csv as Trade;
-        string key = $"{trade.ticker}_trades";
+        var trade = (Trade)obj;
+        string key = $"{trade.Ticker}_trades";
 
-        if (!_Trades.TryGetValue(trade.ticker, out ConcurrentQueue<Trade> bag))
+        if (!_Trades.TryGetValue(trade.Ticker, out ConcurrentQueue<Trade> bag))
             bag = new ConcurrentQueue<Trade>();
 
         bag.Enqueue(trade);
-        var ret = _Trades.AddOrUpdate(trade.ticker, bag, (key, old) => bag);
+        var ret = _Trades.AddOrUpdate(trade.Ticker, bag, (key, old) => bag);
         return Task.FromResult(ret != null);
     };
 

@@ -15,6 +15,6 @@ internal abstract class CSVFactory
 
     };
     public abstract Func<Task> ProcessAsync { get; }
-    public abstract Func<Csv, Task<bool>> AddAsync { get; }
+    public abstract Func<ICsv, Task<bool>> AddAsync { get; }
     protected abstract Func<string, Task> WriteAsync { get; }
 }
