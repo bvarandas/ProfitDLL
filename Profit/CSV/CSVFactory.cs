@@ -1,4 +1,4 @@
-﻿using CSV;
+﻿using CSV.Entities;
 using CsvHelper.Configuration;
 using System;
 using System.Globalization;

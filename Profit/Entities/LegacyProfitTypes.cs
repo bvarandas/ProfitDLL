@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace ProfitDLLClient;
+namespace ProfitDLL.Entities;
 
 #region Types
 public struct TConnectorOffer(string ticker, double price, long qtd, int agent, long offerId, DateTime date)

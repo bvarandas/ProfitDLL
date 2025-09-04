@@ -1,4 +1,4 @@
-﻿using CSV;
+﻿using CSV.Entities;
 using CsvHelper;
 using ProfitDLL.Factory;
 using System;

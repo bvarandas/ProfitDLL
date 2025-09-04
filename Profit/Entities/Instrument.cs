@@ -1,5 +1,5 @@
 ﻿using System;
-namespace CSV;
+namespace CSV.Entities;
 
 internal interface ICsv;
 

@@ -1,4 +1,4 @@
-﻿using CSV;
+﻿using CSV.Entities;
 using System;
 using System.IO;
 using System.Threading;
@@ -46,15 +46,10 @@ internal class CSVFacade : IDisposable
             Directory.CreateDirectory(path);
     }
 
-    public async void AddCsvTopBookAsync(Object csv) => await _topbook.AddAsync((ICsv)csv);
-    public async void AddCsvTradesAsync(Object csv) => await _trades.AddAsync((ICsv)csv);
-    public async void AddCsvBookAsync(Object csv) => await _topbook10.AddAsync((ICsv)csv);
-    public async void AddCsvBookEvent(Object csv) => await _bookevent.AddAsync((ICsv)csv);
-
-    //public async Task AddCsvTopBookAsync(Csv csv) => await _topbook.AddAsync(csv);
-    //public async Task AddCsvTradesAsync(Csv csv) => await _trades.AddAsync(csv);
-    //public async Task AddCsvBookAsync(Csv csv) => await _topbook10.AddAsync(csv);
-    //public async Task AddCsvBookEvent(Csv csv) => await _bookevent.AddAsync(csv);
+    public async void AddCsvTopBookAsync(ICsv csv) => await _topbook.AddAsync(csv);
+    public async void AddCsvTradesAsync(ICsv csv) => await _trades.AddAsync(csv);
+    public async void AddCsvBookAsync(ICsv csv) => await _topbook10.AddAsync(csv);
+    public async void AddCsvBookEventAsync(ICsv csv) => await _bookevent.AddAsync(csv);
     public void Dispose() => cs.Cancel();
 
 }

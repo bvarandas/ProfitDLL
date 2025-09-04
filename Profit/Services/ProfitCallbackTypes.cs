@@ -1,7 +1,8 @@
+using ProfitDLL.Entities;
 using System;
 using System.Runtime.InteropServices;
 
-namespace ProfitDLLClient;
+namespace ProfitDLL.Services;
 
 
 ////////////////////////////////////////////////////////////////////////////////

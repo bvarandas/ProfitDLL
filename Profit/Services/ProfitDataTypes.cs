@@ -1,13 +1,12 @@
 using System;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.Marshalling;
 
-namespace ProfitDLLClient;
+namespace ProfitDLL.Services;
 
 public enum NResult : int
 {
     NL_OK = 0,
-    
+
     NL_INTERNAL_ERROR = unchecked((int)0x80000001),
     NL_NOT_INITIALIZED,
     NL_INVALID_ARGS,
