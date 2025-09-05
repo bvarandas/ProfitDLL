@@ -33,9 +33,9 @@ internal class DllConectorFacadeService : BackgroundService
     public static bool bAtivo = false;
     public static bool bMarketConnected = false;
 
-    private readonly ProfitConfig _config;
+    private readonly ProfitSettings _config;
 
-    public DllConectorFacadeService(IOptions<ProfitConfig> options)
+    public DllConectorFacadeService(IOptions<ProfitSettings> options)
     {
         _config = options.Value;
     }
@@ -454,7 +454,7 @@ internal class DllConectorFacadeService : BackgroundService
         string pass = _config.Password;
         string activationCode = _config.ActivationCode;
         var tickers = _config.Tickers;  //configuration.GetSection("ProfitSettings:Tickers").Get<List<string>>();
-        string pathFile = _config.pathFile; // configuration["ProfitSettings:PathFile"];
+        string pathFile = _config.PathFile; // configuration["ProfitSettings:PathFile"];
 
         Console.WriteLine($"activationCode: {activationCode}");
         Console.Write($"Usuário: {user}");

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using OpenTelemetry.Logs;
 using ProfitDLL.Config;
 using System;
 using System.IO;
@@ -20,9 +22,18 @@ IHost host = Host.CreateDefaultBuilder(args)
             builder.AddConfiguration(config);
 
         })
+        .ConfigureLogging(logging =>
+        {
+            logging.AddOpenTelemetry(log =>
+            {
+                log.AddOtlpExporter();
+            });
+        })
         .ConfigureServices(services =>
         {
+
             NativeInjectorBoostrapper.RegisterServices(services, config);
+
         }).Build();
 await host
 .RunAsync();
