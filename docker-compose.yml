@@ -1,4 +1,7 @@
 services:
+  # profit.dashboard:
+  #   container_name: dashboard
+
   profitdll:
     image: ${DOCKER_REGISTRY-}profitdll
     build:

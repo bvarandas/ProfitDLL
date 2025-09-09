@@ -20,6 +20,7 @@ internal class NativeInjectorBoostrapper
                        .AddAspNetCoreInstrumentation()
                        .AddHttpClientInstrumentation();
 
+                //metrics.AddOtlpExporter();
                 metrics.AddOtlpExporter(options => options.Endpoint = new Uri("http://profitdll.dashboard:18889"));
             })
             .WithTracing(tracing =>
@@ -29,6 +30,7 @@ internal class NativeInjectorBoostrapper
                     .AddHttpClientInstrumentation()
                     .AddEntityFrameworkCoreInstrumentation();
 
+                //tracing.AddOtlpExporter();
                 tracing.AddOtlpExporter(options => options.Endpoint = new Uri("http://profitdll.dashboard:18889"));
             });
 

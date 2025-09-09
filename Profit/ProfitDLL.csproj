@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ProfitDLL.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Services\ProfitDLL.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
